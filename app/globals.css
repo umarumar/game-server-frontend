@@ -1,26 +1,40 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Tailwind v4: the theme lives here in CSS (no tailwind.config.js).
+  Tokens declared in @theme become real utilities, e.g.
+  --color-card  -> bg-card / text-card / border-card.
+*/
+@theme {
+  /* Surfaces */
+  --color-bg: #0d0d14;
+  --color-card: #13131f;
+  --color-border: #2a2a3a;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Text */
+  --color-text: #e2e8f0;
+  --color-muted: #6b7280;
+
+  /* Accents */
+  --color-purple: #7c3aed; /* metric / player things */
+  --color-purple-soft: #a78bfa;
+  --color-green: #34d399; /* scores / success */
+  --color-amber: #f59e0b; /* country / rank */
+  --color-teal: #2dd4bf; /* period filters */
+
+  /* Fonts (wired to next/font CSS vars from layout.tsx) */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Fixed dark theme — no light mode, no prefers-color-scheme. */
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
