@@ -19,6 +19,11 @@ interface GameState {
   token: string | null;
   setToken: (token: string | null) => void;
 
+  // Whether the current session is an admin (set at admin login). Memory-only,
+  // like the token. Gates the /admin pages and the conditional Admin nav link.
+  isAdmin: boolean;
+  setIsAdmin: (value: boolean) => void;
+
   // Device id — persisted in localStorage so re-login works across refresh.
   deviceId: string;
   regenerateDeviceId: () => void;
@@ -33,6 +38,7 @@ const GameContext = createContext<GameState | null>(null);
 export function GameProvider({ children }: { children: ReactNode }) {
   const [gameSlug, setGameSlug] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [player, setPlayer] = useState<Player | null>(null);
 
   // Load (or first-time generate) the deviceId from localStorage. Done in a
@@ -42,17 +48,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // stable under React StrictMode's double-invoke.
   const [deviceId, setDeviceId] = useState<string>(() => {
     if (typeof window === "undefined") return "";
-    let stored = localStorage.getItem(DEVICE_ID_KEY);
-    if (!stored) {
-      stored = generateDeviceId();
-      localStorage.setItem(DEVICE_ID_KEY, stored);
+    // localStorage access can throw (e.g. iOS Safari private mode). Never let a
+    // storage failure crash the app — fall back to an in-memory device id.
+    try {
+      let stored = localStorage.getItem(DEVICE_ID_KEY);
+      if (!stored) {
+        stored = generateDeviceId();
+        localStorage.setItem(DEVICE_ID_KEY, stored);
+      }
+      return stored;
+    } catch {
+      return generateDeviceId();
     }
-    return stored;
   });
 
   function regenerateDeviceId() {
     const next = generateDeviceId();
-    localStorage.setItem(DEVICE_ID_KEY, next);
+    try {
+      localStorage.setItem(DEVICE_ID_KEY, next);
+    } catch {
+      // ignore — keep the new id in memory only
+    }
     setDeviceId(next);
   }
 
@@ -63,6 +79,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setGameSlug,
         token,
         setToken,
+        isAdmin,
+        setIsAdmin,
         deviceId,
         regenerateDeviceId,
         player,

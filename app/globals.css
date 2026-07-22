@@ -19,8 +19,13 @@
   --color-purple: #7c3aed; /* metric / player things */
   --color-purple-soft: #a78bfa;
   --color-green: #34d399; /* scores / success */
-  --color-amber: #f59e0b; /* country / rank */
+  --color-amber: #f59e0b; /* country / rank / admin accent */
   --color-teal: #2dd4bf; /* period filters */
+
+  /* Admin zone */
+  --color-admin-tint: #1c1008; /* amber-tinted surface for admin */
+  --color-red-border: #7f1d1d; /* destructive action border */
+  --color-red-text: #f87171; /* destructive action text */
 
   /* Fonts (wired to next/font CSS vars from layout.tsx) */
   --font-sans: var(--font-geist-sans);
